@@ -55,7 +55,7 @@ public class EtfDao {
         return jdbcTemplate.query(sql, etfRowMapper, userId);
     }
 
-    public List<Etf> search(String query, String sortBy, Long userId, boolean isAdmin) {
+    public List<Etf> search(String query, String sortBy, String sortDirection, Long userId, boolean isAdmin) {
         StringBuilder sql = new StringBuilder("SELECT * FROM etf WHERE ");
         
         if (!isAdmin) {
@@ -64,10 +64,13 @@ public class EtfDao {
         
         sql.append("(ticker LIKE ? OR description LIKE ?) ");
         
+        //equalsIgnoreCase to make it case insensitive - "DESC", "desc", "Desc" are all treated the same.
+        String direction = "desc".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC";
+        
         if ("assetClass".equals(sortBy)) {
-            sql.append("ORDER BY asset_class");
+            sql.append("ORDER BY asset_class ").append(direction);
         } else {
-            sql.append("ORDER BY ticker");
+            sql.append("ORDER BY ticker ").append(direction);
         }
         
         String searchParam = "%" + query + "%";
@@ -129,17 +132,20 @@ public class EtfDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<Etf> findAllSorted(String sortBy, Long userId, boolean isAdmin) {
+    public List<Etf> findAllSorted(String sortBy, String sortDirection, Long userId, boolean isAdmin) {
         StringBuilder sql = new StringBuilder("SELECT * FROM etf");
         
         if (!isAdmin) {
             sql.append(" WHERE user_id = ? OR is_public = TRUE");
         }
-        
+
+        //Again equalsIgnoreCase to make it case insensitive.
+        String direction = "desc".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC";
+
         if ("assetClass".equals(sortBy)) {
-            sql.append(" ORDER BY asset_class");
+            sql.append(" ORDER BY asset_class ").append(direction);
         } else {
-            sql.append(" ORDER BY ticker");
+            sql.append(" ORDER BY ticker ").append(direction);
         }
         
         if (isAdmin) {

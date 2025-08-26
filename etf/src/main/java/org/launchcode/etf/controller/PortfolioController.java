@@ -33,16 +33,16 @@ public class PortfolioController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public List<Portfolio> getAllPortfolios(@RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, Principal principal) {
+    public List<Portfolio> getAllPortfolios(@RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection, Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
         boolean isAdmin = "ADMIN".equals(user.getRole());
         
         if (search != null && !search.trim().isEmpty()) {
-            return portfolioDao.search(search, sortBy, user.getId(), isAdmin);
+            return portfolioDao.search(search, sortBy, sortDirection, user.getId(), isAdmin);
         }
 
         if (sortBy != null && !sortBy.trim().isEmpty()) {
-            return portfolioDao.findAllSorted(sortBy, user.getId(), isAdmin);
+            return portfolioDao.findAllSorted(sortBy, sortDirection, user.getId(), isAdmin);
         }
 
         if (isAdmin) {

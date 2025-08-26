@@ -85,11 +85,24 @@ public class UserDao {
         return user;
     }
 
-    public List<User> search(String query) {
-        String sql = "SELECT * FROM users WHERE username LIKE ? ORDER BY username";
+    public List<User> search(String query, String sortBy, String sortDirection) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM users WHERE username LIKE ?");
+
+        String direction = "desc".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC";
+
+        if ("role".equals(sortBy)) {
+            sql.append(" ORDER BY role ").append(direction)
+            .append(", username ").append(direction);
+        } else if ("id".equals(sortBy)) {
+            sql.append(" ORDER BY id ").append(direction);
+        } else {
+            sql.append(" ORDER BY username ").append(direction);
+        }
+
         String searchParam = "%" + query + "%";
-        return jdbcTemplate.query(sql, userRowMapper, searchParam);
+        return jdbcTemplate.query(sql.toString(), userRowMapper, searchParam);
     }
+
 
     public User update(User user) {
         String sql = "UPDATE users SET username = ?, role = ? WHERE id = ?";

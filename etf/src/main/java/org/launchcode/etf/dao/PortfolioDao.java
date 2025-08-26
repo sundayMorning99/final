@@ -42,7 +42,7 @@ public class PortfolioDao {
         return jdbcTemplate.query(sql, portfolioRowMapper, userId);
     }
 
-    public List<Portfolio> findAllSorted(String sortBy, Long userId, boolean isAdmin) {
+    public List<Portfolio> findAllSorted(String sortBy, String sortDirection, Long userId, boolean isAdmin) {
         StringBuilder sql = new StringBuilder("SELECT * FROM portfolio");
         
         //Admin can see all portofolios, so you don't have to add WHERE clause.
@@ -50,10 +50,12 @@ public class PortfolioDao {
             sql.append(" WHERE user_id = ? OR is_public = TRUE");
         }
         
+        String direction = "desc".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC";
+
         if ("userId".equals(sortBy)) {
-            sql.append(" ORDER BY user_id");
+            sql.append(" ORDER BY user_id ").append(direction);
         } else {
-            sql.append(" ORDER BY name");
+            sql.append(" ORDER BY name ").append(direction);
         }
         
         if (isAdmin) {
@@ -73,7 +75,7 @@ public class PortfolioDao {
         return jdbcTemplate.query(sql, portfolioRowMapper, userId);
     }
 
-    public List<Portfolio> search(String query, String sortBy, Long userId, boolean isAdmin) {
+    public List<Portfolio> search(String query, String sortBy, String sortDirection, Long userId, boolean isAdmin) {
         StringBuilder sql = new StringBuilder("SELECT * FROM portfolio WHERE ");
         
         if (!isAdmin) {
@@ -82,10 +84,12 @@ public class PortfolioDao {
         
         sql.append("name LIKE ? ");
         
+        String direction = "desc".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC";
+
         if ("userId".equals(sortBy)) {
-            sql.append("ORDER BY user_id");
+            sql.append("ORDER BY user_id ").append(direction);
         } else {
-            sql.append("ORDER BY name");
+            sql.append("ORDER BY name ").append(direction);
         }
         
         String searchParam = "%" + query + "%";

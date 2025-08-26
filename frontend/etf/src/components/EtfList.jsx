@@ -8,13 +8,14 @@ const EtfList = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('ticker');
+  const [sortDirection, setSortDirection] = useState('asc');
   const [showModal, setShowModal] = useState(false);
   const [editingEtf, setEditingEtf] = useState(null);
   const [formData, setFormData] = useState({ticker: '', description: '', assetClass: '', expenseRatio: '',isPublic: false});
 
   useEffect(() => {
     fetchEtfs();
-  }, [searchTerm, sortBy]);
+  }, [searchTerm, sortBy, sortDirection]);
 
   // When it comes to API, there are two important symbols: ? and &.
   // Base address comes before the ? symbol, and the parameters come after it.
@@ -29,6 +30,7 @@ const EtfList = ({ user }) => {
       // If the sortBy is not empty, we add it to the params
       if (searchTerm) params.append('search', searchTerm);
       if (sortBy) params.append('sortBy', sortBy);
+      if (sortDirection) params.append('sortDirection', sortDirection);
       
       const response = await fetch(`/api/etfs?${params}`, {
         headers: {
@@ -154,6 +156,8 @@ const EtfList = ({ user }) => {
         setSearchTerm={setSearchTerm}
         sortBy={sortBy}
         setSortBy={setSortBy}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
         canEditEtf={canEditEtf}

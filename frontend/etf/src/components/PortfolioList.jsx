@@ -8,19 +8,21 @@ const PortfolioList = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
   const [showModal, setShowModal] = useState(false);
   const [editingPortfolio, setEditingPortfolio] = useState(null);
   const [formData, setFormData] = useState({name: '', isPublic: false});
 
   useEffect(() => {
     fetchPortfolios();
-  }, [searchTerm, sortBy]);
+  }, [searchTerm, sortBy, sortDirection]);
 
   const fetchPortfolios = async () => {
     try {
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
       if (sortBy) params.append('sortBy', sortBy);
+      if (sortDirection) params.append('sortDirection', sortDirection);
       
       const response = await fetch(`/api/portfolios?${params}`, {
         headers: {
@@ -131,6 +133,8 @@ const PortfolioList = ({ user }) => {
         setSearchTerm={setSearchTerm}
         sortBy={sortBy}
         setSortBy={setSortBy}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
         canEditPortfolio={canEditPortfolio}

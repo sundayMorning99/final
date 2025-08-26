@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const PortfolioGrid = ({ portfolios, searchTerm, setSearchTerm, sortBy, setSortBy, handleEdit, handleDelete, canEditPortfolio, onAddPortfolio 
+const PortfolioGrid = ({ portfolios, searchTerm, setSearchTerm, sortBy, setSortBy, sortDirection, setSortDirection, handleEdit, handleDelete, canEditPortfolio, onAddPortfolio 
 }) => {
   return (
     <div>
@@ -17,6 +17,12 @@ const PortfolioGrid = ({ portfolios, searchTerm, setSearchTerm, sortBy, setSortB
           <select className="form-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
             <option value="name">Sort by Name</option>
             <option value="userId">Sort by User ID</option>
+          </select>
+        </div>
+        <div className="col-md-3">
+          <select className="form-select" value={sortDirection} onChange={(e)=> setSortDirection(e.target.value)}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
           </select>
         </div>
       </div>

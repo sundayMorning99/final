@@ -67,10 +67,10 @@ public class AuthController {
     //only admin can manage users
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getAllUsers(@RequestParam(required = false) String search) {
+    public List<User> getAllUsers(@RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection) {
         List<User> users;
         if (search != null && !search.trim().isEmpty()) {
-            users = userDao.search(search);
+            users = userDao.search(search, sortBy, sortDirection);
         } else {
             users = userDao.findAll();
         }
